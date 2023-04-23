@@ -21,6 +21,16 @@ const initialState = { desc: '', date: new Date(), showDatePicker: false}
         ...initialState
     }
 
+    save = () => {
+        const newTask = {
+            desc: this.state.desc,
+            date: this.state.date
+        }
+
+        this.props.onSave &&  this.props.onSave(newTask)
+        this.setState({...initialState})
+    }
+
     getDateTimePicker = () => {
                 //o _ para que função não reclame por não está sendo usada
                 // como o segundo paramêtro da função é  date e nome do atributo no state é date, pode-se chamar o setState dessa forma
@@ -69,7 +79,7 @@ const initialState = { desc: '', date: new Date(), showDatePicker: false}
                         <TouchableOpacity onPress={this.props.onCancel}>
                             <Text style={styles.button}>Cancelar</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity>
+                        <TouchableOpacity onPress={this.save}>
                             <Text style={styles.button}>Salvar</Text>
                         </TouchableOpacity>
                     </View>

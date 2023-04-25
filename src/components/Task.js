@@ -24,18 +24,31 @@ export default props => {
 
     const getRightContent = () =>{
         return (
-            <TouchableOpacity style={styles.right}>
+            <TouchableOpacity style={styles.right}
+                onPress={() => props.onDelete && props.onDelete(props.id)}>
                 <Icon name="trash" size={30}  color="#FFF"/>
+            </TouchableOpacity>
+        )
+    }
+
+    const getLeftContent = () =>{
+        return (
+            <TouchableOpacity style={styles.left}>
+                <Icon name="trash" size={20}  color="#FFF" 
+                        style={styles.excludeIcon}/>
+                <Text style={styles.excludeText}>Excluir</Text>
             </TouchableOpacity>
         )
     }
 
     return (
         <GestureHandlerRootView>
-            <Swipeable renderRightActions={getRightContent}>
+            <Swipeable renderRightActions={getRightContent}
+                       renderLeftActions={getLeftContent}
+                       onSwipeableLeftOpen={() => props.onDelete && props.onDelete(props.id)}>
                 <View style={styles.container}>
                     <TouchableNativeFeedback
-                        onPress={() => props.toggleTask(props.id)}>
+                        onPress={() => props.onToggleTask(props.id)}>
                         <View style={styles.checkContainer}>
                             {getCheckView(props.doneAt)}
                         </View>
@@ -73,7 +86,8 @@ const styles = StyleSheet.create({
         borderColor: '#AAA',
         borderBottomWidth: 1,
         alignItems: 'center',
-        paddingVertical: 10
+        paddingVertical: 10,
+        backgroundColor: '#FFF'
     },
     checkContainer:{
         width: '20%',
@@ -111,5 +125,20 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'flex-end',
         paddingHorizontal: 20
+    },
+    left:{
+        flex:1,
+        backgroundColor: 'red',
+        flexDirection: 'row',
+        alignItems: 'center'
+    },
+    excludeIcon: {
+        marginLeft: 10
+    },
+    excludeText:{
+        fontFamily: commonStyles.fontFamily,
+        color: '#FFF',
+        fontSize: 20,
+        margin: 10
     }
 })

@@ -4,6 +4,8 @@ import { View, Text, ImageBackground, StyleSheet, FlatList, TouchableOpacity, Pl
 import commonStyles from "../commonStyles"
 import todayImage from '../../assets/imgs/today.jpg'
 
+
+import AsyncStorage from "@react-native-community/async-storage"
 import  Icon  from "react-native-vector-icons/FontAwesome"
 
 import moment from "moment/moment"
@@ -12,28 +14,24 @@ import 'moment/locale/pt-br'
 import Task from "../components/Task"
 import AddTasks from "./AddTasks"
 
+const initialState = { 
+    showDoneTasks: true,
+    showAddTask: false,
+    visibleTasks:[],
+    tasks: []
+}
+
 export default class TaskList extends Component{
     state = {
-        showDoneTasks: true,
-        showAddTask: false,
-        visibleTasks:[],
-        tasks: [{
-            id: Math.random(),
-            desc: 'Comprar Livro do React Native',
-            estimateAt: new Date(),
-            doneAt: new Date(),
-        },{
-            id: Math.random(),
-            desc: 'Ler Livro do React Native',
-            estimateAt: new Date(),
-            doneAt: null,
-        }]
+        ...initialState
     }
 
     //função para montar o objeto quando ele estiver pronto (quando for chamado o setState da filterTasks)
   
-    componentDidMount = () => {
-         this.filterTasks 
+    componentDidMount = async() => {
+         const stateString = await AsyncStorage.getItem('tasksState')
+         const state = JSON.parse(stateString) || initialState
+         this.setState(state, this.filterTasks)
     }
     //colocar a função filterTasks como segundo parametros para ser a 
     //função callback do setState
@@ -51,6 +49,8 @@ export default class TaskList extends Component{
         }
 
         this.setState({visibleTasks})
+        AsyncStorage.setItem('tasksState', JSON.stringify(this.state))
+
     }
 
     toggleTask = taskId => {
